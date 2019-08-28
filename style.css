@@ -29,8 +29,23 @@ tr {
     height: 20px;
 }
 
+#buttons {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+}
+#buttons p {
+    margin-left: 30px;
+    font-size: 1.3rem;
+}
+#mines-remaining {
+    font-weight: 700;
+}
 .diff-btn {
     padding: 10px;
+    margin: 10px;
+    margin-left: 0px;
     background-color: white;
     border: 1px solid black;
     border-radius: 10px;

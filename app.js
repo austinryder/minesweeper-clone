@@ -1,9 +1,12 @@
 var difficulty = document.querySelectorAll('#buttons button');
+var minesLeft = document.querySelector('#mines-remaining')
 var intro = document.querySelector('#intro');
 var game = document.querySelector('#minesweeper');
 var message = document.querySelector('#message');
 var mines;
 var minesweepButtons;
+
+var minesRemaining = 0;
 
 var height, width, numMines;
 var mineCoords = [];
@@ -31,11 +34,14 @@ difficulty.forEach( function (btn) {
                 break;
         }
 
+        minesRemaining = numMines;
+        minesLeft.textContent = minesRemaining;
         generateNewBoard(width, height, numMines);
     });
 });
 
 function generateNewBoard(width, height, numMines) {
+    
     game.disabled = false;
     message.textContent = "";
 
@@ -119,9 +125,13 @@ function clickHandlers() {
             if (element.textContent === "") {
                 element.textContent = "🏴"
                 element.classList.add("disabled");
+                minesRemaining--;
+                minesLeft.textContent = minesRemaining;
             } else if (element.textContent === "🏴") {
                 element.textContent = "";
                 element.classList.remove("disabled");
+                minesRemaining++;
+                minesLeft.textContent = minesRemaining;
             }
 
             return false;
@@ -153,6 +163,15 @@ function showButton(button) {
     } else {
         button.classList.add('clicked');
         button.textContent = val;  
+    }
+
+    var win = [...minesweepButtons].every(btn => btn.classList.contains('clicked') || btn.getAttribute('data-content') == "bomb");
+
+    if (win) {
+        message.textContent = "YOU WIN!";
+        minesweepButtons.forEach(function(button) {
+            button.disabled = true;
+        })
     }
 }
 
