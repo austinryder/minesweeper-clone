@@ -55,6 +55,12 @@ function reset() {
         var minutes = parseInt(secondsPassed / 60);
         var seconds = secondsPassed - (minutes * 60);
 
+        if (minutes >= 100) {
+            message.textContent = "You still there? 😴"
+            clearInterval(timer);
+            return;
+        }
+
         timeDisplay.textContent = ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
     }, 1000);
 
@@ -201,8 +207,8 @@ function showArea(button) {
         var idx = parseInt(idcoord[0]);
         var idy = parseInt(idcoord[1]);
 
-        if ((idx === x + 1 && idy === y + 1) || (idx === x + 1 && idy === y) || (idx === x + 1 && idy === y - 1) || (idx === x && idy === y + 1) || 
-            (idx === x && idy === y - 1) || (idx === x - 1 && idy === y + 1) || (idx === x - 1 && idy === y) || (idx === x - 1 && idy === y - 1)) {
+        if ((idx === x + 1 && (idy === y + 1 || idy === y || idy === y - 1)) || (idx === x && (idy === y + 1 || idy === y - 1)) ||
+            (idx === x - 1 && (idy === y + 1 || idy === y || idy === y - 1))) {
             showButton(btn);
         }
     }
