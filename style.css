@@ -35,7 +35,20 @@ tr {
     align-content: center;
     align-items: center;
 }
-#buttons p {
+#timer {
+    margin-left: 30px;
+    font-size: 1.3rem;
+    color: red;
+    width: 100px;
+    padding: 5px;
+    font-weight: 700;
+}
+#timer::before {
+    content: "🕒: ";
+    color: black;
+    font-weight: 400;
+}
+#mine-counter {
     margin-left: 30px;
     font-size: 1.3rem;
 }

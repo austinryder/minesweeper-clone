@@ -3,9 +3,12 @@ var minesLeft = document.querySelector('#mines-remaining')
 var intro = document.querySelector('#intro');
 var game = document.querySelector('#minesweeper');
 var message = document.querySelector('#message');
+var timeDisplay = document.querySelector('#timer');
 var mines;
 var minesweepButtons;
 
+var timer;
+var secondsPassed = 0;
 var minesRemaining = 0;
 
 var height, width, numMines;
@@ -34,6 +37,19 @@ difficulty.forEach( function (btn) {
                 break;
         }
 
+        clearInterval(timer);
+
+        secondsPassed = 0;
+        timeDisplay.textContent = "00:00";
+        timer = setInterval(function() {
+            secondsPassed++;
+
+            var formattedTime = "";
+            var minutes = parseInt(secondsPassed / 60);
+            var seconds = secondsPassed - (minutes * 60);
+
+            timeDisplay.textContent = ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+        }, 1000);
         minesRemaining = numMines;
         minesLeft.textContent = minesRemaining;
         generateNewBoard(width, height, numMines);
@@ -148,12 +164,14 @@ function showButton(button) {
         message.textContent = "YOU LOSE!";
         mines.forEach(function(mine) {
             mine.textContent = "💣";
-            mine.classList.add('clicked');
+            mine.classList.add('clicked');            
         });
 
         minesweepButtons.forEach(function(button) {
             button.disabled = true;
-        })
+        });
+
+        clearInterval(timer);
     } else if (val === "0") {
         button.classList.add('clicked');
         setTimeout(
@@ -172,6 +190,8 @@ function showButton(button) {
         minesweepButtons.forEach(function(button) {
             button.disabled = true;
         })
+
+        clearInterval(timer);
     }
 }
 
