@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    font-family: Montserrat, sans-serif;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+td {
+    padding: 0;
+    margin: 0;
+}
+tr {
+    padding: 0;
+    margin: 0;
+}
+
+#header {
+    width: 80%;
+    margin: 0 auto
+}
+#minesweeper {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#message {
+    height: 20px;
+}
+
+.diff-btn {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-family: Montserrat, sans-serif;
+}
+.minesweep-btn {
+    margin: 0;
+    outline: none;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-family: Montserrat, sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+.clicked {
+    background: none;
+}
+
+.num1 {
+    color: blue;
+}
+.num2 {
+    color: green;
+}
+.num3 {
+    color: red;
+}
+.num4 {
+    color: darkblue;
+}
+.num5 {
+    color: darkred;
+}
+.num6 {
+    color: cyan;
+}
+.num7 {
+    color: purple;
+}
+.num8 {
+    color: black;
+}
