@@ -17,13 +17,26 @@ tr {
     margin: 0;
 }
 
+#progress {
+    margin-left: 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 20px;
+    width: 200px;
+}
+
+#progress #percentage {
+    background-color: green;
+    border-radius: 3.5px;
+    height: 100%;
+    width: 0%;
+}
+
 #header {
-    width: 80%;
-    margin: 0 auto
+    margin: 50px;
 }
 #minesweeper {
-    width: 80%;
-    margin: 0 auto;
+    margin: 50px;
 }
 
 #message {
@@ -62,7 +75,41 @@ tr {
     color: black;
     font-weight: 400;
 }
-.diff-btn {
+
+#custom-properties {
+    margin-top: 10px;
+    display: none;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+}
+#custom-properties label {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+#custom-properties input {
+    outline: none;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 4px;
+    font-size: 1.2rem;
+    margin: 10px 10px;
+    width: 50px;
+    text-align: center;
+}
+#custom-properties #custom-num-mines {
+    width: 100px;
+}
+#custom-properties p {
+    font-size: .8rem;
+    margin: 0;
+}
+#custom-go {
+    height: 45px;
+    width: 45px;
+}
+
+.btn {
     outline: none;
     padding: 10px;
     margin-right: 10px;
@@ -74,7 +121,7 @@ tr {
     font-weight: 700;
     font-size: 1.1rem;
 }
-.diff-btn:hover {
+.btn:hover {
     color: white;
     background-color: #03A9F4;
 }
@@ -86,19 +133,28 @@ tr {
     margin: 0;
     padding: 0;
     outline: none;
-    height: 32px;
-    width: 32px;
+    height: 36px;
+    width: 36px;
     text-align: center;
     border: 1px solid black;
     border-radius: 2px;
     font-family: Montserrat, sans-serif;
     font-weight: 700;
     font-size: 1.1rem;
-    background-color: #e3e3e3;
+    background-color: #d3d3d3;
     text-align: center;
     vertical-align: middle;
     line-height: 32px;
 }
+
+.minesweep-btn.small {
+    height: 24px;
+    width: 24px;
+    font-size: 0.9rem;
+    line-height: 24px;
+}
+
+
 .clicked {
     background: none;
 }

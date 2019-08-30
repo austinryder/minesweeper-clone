@@ -14,12 +14,27 @@
         <p>Choose a difficulty to get started</p>
 
         <div id="buttons">
-            <button id="easy" class="diff-btn" data-content="easy">Easy</button>
-            <button id="medium" class="diff-btn" data-content="medium">Medium</button>
-            <button id="hard" class="diff-btn" data-content="hard">Hard</button>
+            <button id="easy" class="btn diff-btn" data-content="easy">Easy</button>
+            <button id="medium" class="btn diff-btn" data-content="medium">Medium</button>
+            <button id="hard" class="btn diff-btn" data-content="hard">Hard</button>
+            <button id="custom" class="btn">Custom</button>
 
             <p id="timer">00:00</p>
             <p id="mines-remaining">0</p>
+        </div>
+
+        <div id="custom-properties">
+            <form onsubmit="return false">
+                <label for="custom-height">H: </label>
+                <input type="number" name="custom-height" id="custom-height" required min="1">
+                <label for="custom-width">W: </label>
+                <input type="number" name="custom-width" id="custom-width" required min="1">
+                <label for="custom-height">💣#: </label>
+                <input type="number" name="custom-num-mines" id="custom-num-mines" required>
+
+                <button id="custom-go" class="btn diff-btn" data-content="custom">►</button>
+                <p>*note - values over 100 may take a while to load</p>
+            </form>
         </div>
 
         <p id="message"></p>

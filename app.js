@@ -1,9 +1,15 @@
-var difficulty = document.querySelectorAll('#buttons button');
+var difficulty = document.querySelectorAll('.diff-btn');
 var minesLeft = document.querySelector('#mines-remaining')
 var intro = document.querySelector('#intro');
 var game = document.querySelector('#minesweeper');
 var message = document.querySelector('#message');
 var timeDisplay = document.querySelector('#timer');
+var custom = document.querySelector('#custom');
+var customFields = document.querySelector('#custom-properties');
+var customH = customFields.querySelector('#custom-height');
+var customW = customFields.querySelector('#custom-width');
+var customM = customFields.querySelector('#custom-num-mines');
+
 var mines;
 var minesweepButtons;
 
@@ -14,6 +20,22 @@ var minesRemaining = 0;
 var height, width, numMines;
 var mineCoords = [];
 var allCoords = [];
+var revealed = [];
+
+custom.addEventListener ('click', function () {
+    difficulty.forEach(btn => btn.classList.remove('selected')); 
+    this.classList.add('selected');
+
+    message.textContent = "";
+    minesLeft.textContent = "0";
+    timeDisplay.textContent = "00:00";
+    clearInterval(timer);
+
+    if (game.hasChildNodes)
+        game.removeChild(game.firstChild);
+
+    customFields.style.display = 'flex';
+});
 
 difficulty.forEach( function (btn) {
     btn.addEventListener('click', function () {
@@ -35,17 +57,38 @@ difficulty.forEach( function (btn) {
                 width = 18;
                 numMines = 24;
                 break;
+            case 'custom':
+                height = parseInt(customH.value);
+                width = parseInt(customW.value);
+                numMines = parseInt(customM.value);
+                break;
         }
 
-        difficulty.forEach(btn => btn.classList.remove('selected'));
-        this.classList.add('selected');
+        difficulty.forEach(btn => btn.classList.remove('selected')); 
+        custom.classList.remove('selected');
 
-        reset();
+        if (diff === 'custom') {
+            custom.classList.add('selected')
+
+            if (numMines > height * width) {
+                numMines = height * width;
+                customM.value = numMines;
+            }
+        }
+        else {
+            this.classList.add('selected');
+            customFields.style.display = 'none';
+        }
+
+        if (!isNaN(height) && !isNaN(width) && !isNaN(numMines))
+            reset();
     });
 });
 
 function reset() {
     clearInterval(timer);
+
+    revealed = [];
 
     secondsPassed = 0;
     timeDisplay.textContent = "00:00";
@@ -76,47 +119,62 @@ function generateNewBoard(width, height, numMines) {
 
     mineCoords = [];
     for (let i = 0; i < numMines; i++) {
-        mineCoords.push(getNewRandomPoint(width, height));
+        if (mineCoords.length <= width * height) {
+            mineCoords.push(getNewRandomPoint(width, height));
+        }
+        else {
+            break;
+        }
     }
 
     allCoords = [];
     for (let y = 1; y <= height; y++) {
         allCoords.push([]);
         for (let x = 1; x <= width; x++) {
-            if (inArray(mineCoords, [x, y])) {
+            if (mineCoords.indexOf('x' + x + 'y' + y) !== -1) {
                 allCoords[y - 1].push("bomb");
             } else {
                 let surroundingBombs = 0;
 
-                if (inArray(mineCoords, [x + 1, y])) surroundingBombs++;
-                if (inArray(mineCoords, [x + 1, y + 1])) surroundingBombs++;
-                if (inArray(mineCoords, [x + 1, y - 1])) surroundingBombs++;
-                if (inArray(mineCoords, [x, y + 1])) surroundingBombs++;
-                if (inArray(mineCoords, [x, y - 1])) surroundingBombs++;
-                if (inArray(mineCoords, [x - 1, y])) surroundingBombs++;
-                if (inArray(mineCoords, [x - 1, y + 1])) surroundingBombs++;
-                if (inArray(mineCoords, [x - 1, y - 1])) surroundingBombs++;
+                if (mineCoords.indexOf('x' + (x+1) + 'y' + y) !== -1) surroundingBombs++;
+                if (mineCoords.indexOf('x' + (x+1) + 'y' + (y+1)) !== -1) surroundingBombs++;
+                if (mineCoords.indexOf('x' + (x+1) + 'y' + (y-1)) !== -1) surroundingBombs++;
+                if (mineCoords.indexOf('x' + x + 'y' + (y+1)) !== -1) surroundingBombs++;
+                if (mineCoords.indexOf('x' + x + 'y' + (y-1)) !== -1) surroundingBombs++;
+                if (mineCoords.indexOf('x' + (x-1) + 'y' + y) !== -1) surroundingBombs++;
+                if (mineCoords.indexOf('x' + (x-1) + 'y' + (y+1)) !== -1) surroundingBombs++;
+                if (mineCoords.indexOf('x' + (x-1) + 'y' + (y-1)) !== -1) surroundingBombs++;
 
                 allCoords[y - 1].push(surroundingBombs);
             }
         }
     }
 
-    var board = "<table>"
-    for (let y = 0; y < height; y++) {
-        board += "<tr>";
-        for (let x = 0; x < width; x++) {
-            if (allCoords[y][x] == "bomb") {
-                board += "<td><button class=\"minesweep-btn bomb\" data-content=\"bomb\"></button></td>";
-            } else {
-                board += "<td><button id=\"" + x + "-" + y + "\"class=\"minesweep-btn num" + allCoords[y][x] + "\" data-content=\"" + allCoords[y][x] + "\"></button></td>";
-            }
-        }
-        board += "</tr>";
-    }
+    setTimeout(makeBoard("", 0, 0), 0);   
+}
 
-    game.innerHTML = board;
-    clickHandlers();
+function makeBoard(board, y) {
+    y = parseInt(y);
+
+    if (y === 0) board += "<table>";
+
+    board += "<tr>";
+    for (var x = 0; x < width; x++) {
+        if (allCoords[y][x] == "bomb") {
+            board += "<td><button class=\"minesweep-btn bomb\" data-content=\"bomb\"></button></td>";
+        } else {
+            board += "<td><button id=\"x" + x + "y" + y + "\" data-x=\"" + x + "\" data-y=\"" + y + "\" class=\"minesweep-btn num" + 
+                allCoords[y][x] + "\" data-content=\"" + allCoords[y][x] + "\"></button></td>";
+        }
+    }
+    board += "<tr>";
+
+    if (y >= height - 1) {
+        game.innerHTML = board;
+        clickHandlers();
+    } else {
+        setTimeout(makeBoard(board, ++y), 0);
+    }
 }
 
 function getNewRandomPoint(width, height) {
@@ -124,8 +182,8 @@ function getNewRandomPoint(width, height) {
     let x = Math.floor(Math.random() * width) + 1;
     let y = Math.floor(Math.random() * height) + 1;
 
-    if (!inArray(mineCoords, [x,y])) {
-        return [x,y];
+    if (mineCoords.indexOf('x' + x + 'y' + y) === -1) {
+        return ('x' + x + 'y' + y);
     } else {
         return getNewRandomPoint(width, height);
     }
@@ -170,48 +228,59 @@ function showButton(button) {
         message.textContent = "YOU LOSE! 😞";
         mines.forEach(btn => {
             btn.textContent = "💣";
-            btn.classList.add('clicked');            
+            btn.classList.add('clicked');   
+            revealed.push(button.id);         
         });
 
         minesweepButtons.forEach(btn => btn.disabled = true);
 
         clearInterval(timer);
-    } else if (val === "0") {
-        button.classList.add('clicked');
-        showArea(button);
     } else {
-        button.classList.add('clicked');
-        button.textContent = val;  
-    }
+        if (val === "0") {
+            button.classList.add('clicked');
+            revealed.push(button.id);
 
-    var win = [...minesweepButtons].every(btn => btn.classList.contains('clicked') || btn.getAttribute('data-content') == "bomb");
+            //show the area
+            var x = parseInt(button.getAttribute('data-x'));
+            var y = parseInt(button.getAttribute('data-y'));
+        
+            //find the 8 surrounding buttons and show them
+            var ids = [
+                'x' + (x+1) + 'y' + (y+1),
+                'x' + (x+1) + 'y' + y,
+                'x' + (x+1) + 'y' + (y-1),
+                'x' + x + 'y' + (y+1),
+                'x' + x + 'y' + (y-1),
+                'x' + (x-1) + 'y' + (y+1),
+                'x' + (x-1) + 'y' + y,
+                'x' + (x-1) + 'y' + (y-1)
+            ]
 
-    if (win) {
-        message.textContent = "YOU WIN! 🤗";
-        minesweepButtons.forEach(btn => btn.disabled = true);
+            for (var i = 0; i <= ids.length; i++) {
+                if (revealed.indexOf(ids[i]) === -1) {
+                    var btn = document.getElementById(ids[i]);
 
-        clearInterval(timer);
-    }
-}
+                    if (btn != null && btn != undefined) {
+                        setTimeout(showButton(btn), 1 * i);
+                    }
+                }
+            }
 
-function showArea(button) {
-    var coord = button.id.split('-');
-    var x = parseInt(coord[0]);
-    var y = parseInt(coord[1]);
-
-    for (let i = 0; i < minesweepButtons.length; i++) {
-        var btn = minesweepButtons[i];
-        if (btn.classList.contains('clicked')) continue;
-
-        var idcoord = btn.id.split('-');
-        var idx = parseInt(idcoord[0]);
-        var idy = parseInt(idcoord[1]);
-
-        if ((idx === x + 1 && (idy === y + 1 || idy === y || idy === y - 1)) || (idx === x && (idy === y + 1 || idy === y - 1)) ||
-            (idx === x - 1 && (idy === y + 1 || idy === y || idy === y - 1))) {
-            showButton(btn);
+        } else {
+            button.classList.add('clicked');
+            button.textContent = val;  
+            revealed.push(button.id);
         }
-    }
+
+        var win = (revealed.length + numMines) == (height * width)
+
+        if (win) {
+            message.textContent = "YOU WIN! 🤗";
+            minesweepButtons.forEach(btn => btn.disabled = true);
+
+            clearInterval(timer);
+        }
+    } 
 }
 
 function inArray(array, item) {
